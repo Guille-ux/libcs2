@@ -1,0 +1,14 @@
+{
+	"version":"",
+	"name":"",
+	"author":"",
+	"author_email":"",
+	"mantainer_email":"",
+	"license":"",
+	"dependencies":[
+
+	],
+	"entries":{
+		"libcs2-build":""	
+	}
+}
