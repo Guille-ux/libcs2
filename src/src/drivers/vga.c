@@ -128,6 +128,18 @@ void vga_setmode(uint8_t mode) {
 	}
 }
 
+// En vga.c, reemplaza toda tu función vga_setmode por esta:
+
+void vga_minimode() {
+   outb(VGA_MISC_WRITE, 0x67); io_wait();
+   outb(VGA_SEQ_INDEX, 0x00); io_wait(); outb(VGA_SEQ_DATA, 0x01); io_wait();
+   outb(VGA_SEQ_INDEX, 0x01); io_wait(); outb(VGA_SEQ_DATA, 0x01); io_wait();
+   outb(VGA_SEQ_INDEX, 0x04); io_wait(); outb(VGA_SEQ_DATA, 0x06); io_wait();    outb(VGA_SEQ_INDEX, 0x00); io_wait(); outb(VGA_SEQ_DATA, 0x03); io_wait();
+    outb(VGA_CRTC_INDEX, 0x11); io_wait();
+    uint8_t temp = inb(VGA_CRTC_DATA); io_wait();
+    outb(VGA_CRTC_DATA, temp & 0x7F); io_wait();   inb(VGA_INSTAT_READ); io_wait(); outb(VGA_AC_INDEX, 0x20); io_wait();     vga_clear(stdcolor); vga_setcur(0, 0);
+}
+
 void vga_clear(MultiColor color) {
 	if (current_mode==0x03) {
 		char chr=' ';
