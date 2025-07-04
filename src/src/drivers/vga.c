@@ -14,6 +14,18 @@ uint16_t global_y=0;
 uint8_t current_mode=0x03;
 
 
+#define VGA_SEQ_INDEX       0x3C4
+#define VGA_SEQ_DATA        0x3C5
+#define VGA_CRTC_INDEX      0x3D4 // O tu macro VGA_CRTC_INDEX_PORT + VGA_CRTC_INDEX_BASE_A
+#define VGA_CRTC_DATA       0x3D5 // O tu macro VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A
+#define VGA_GC_INDEX        0x3CE
+#define VGA_GC_DATA         0x3CF
+#define VGA_AC_INDEX        0x3C0
+#define VGA_AC_READ         0x3C1
+#define VGA_INSTAT_READ     0x3DA // O tu macro VGA_ACR_RESET
+
+
+
 uint8_t g_misc_output_reg_mode03 = 0x67; // 0x67 = color, 25MHz clock, neg HSYNC, neg VSYNC, IOAS=0x3D4
 
 //  SR01 a SR04
@@ -130,15 +142,7 @@ void vga_setmode(uint8_t mode) {
 
 // En vga.c, reemplaza toda tu función vga_setmode por esta:
 
-void vga_minimode() {
-   outb(VGA_MISC_WRITE, 0x67); io_wait();
-   outb(VGA_SEQ_INDEX, 0x00); io_wait(); outb(VGA_SEQ_DATA, 0x01); io_wait();
-   outb(VGA_SEQ_INDEX, 0x01); io_wait(); outb(VGA_SEQ_DATA, 0x01); io_wait();
-   outb(VGA_SEQ_INDEX, 0x04); io_wait(); outb(VGA_SEQ_DATA, 0x06); io_wait();    outb(VGA_SEQ_INDEX, 0x00); io_wait(); outb(VGA_SEQ_DATA, 0x03); io_wait();
-    outb(VGA_CRTC_INDEX, 0x11); io_wait();
-    uint8_t temp = inb(VGA_CRTC_DATA); io_wait();
-    outb(VGA_CRTC_DATA, temp & 0x7F); io_wait();   inb(VGA_INSTAT_READ); io_wait(); outb(VGA_AC_INDEX, 0x20); io_wait();     vga_clear(stdcolor); vga_setcur(0, 0);
-}
+
 
 void vga_clear(MultiColor color) {
 	if (current_mode==0x03) {
@@ -231,4 +235,93 @@ void vga_fill_line(uint16_t line, vga_char character) {
 		// for the future
 	}
 }
+void dump_vga_registers() {
+    uint16_t i;
+    char hex_str[3];
+    char line_buffer[80];
+    uint16_t current_y = 0;
 
+    
+    void print_and_advance(const char* prefix, uint8_t value) {
+        byte_to_hex_string(value, hex_str);
+        strcpy(line_buffer, prefix);
+        strcat(line_buffer, hex_str);
+        
+        vga_print_string(0, current_y, line_buffer, VGA_COLOR_LIGHT_GREY | (VGA_COLOR_BLACK << 4));
+        current_y++;
+        if (current_y >= height) {
+            vga_scroll(); 
+            current_y = height -1; 
+        }
+    }
+
+    
+    uint8_t val = inb(VGA_MISC_READ); 
+    print_and_advance("MISC_OUTPUT: ", val);
+
+    
+    print_and_advance("--- SECUENCIADOR ---", 0); 
+    for (i = 0; i < 5; i++) { 
+        outb(VGA_SEQ_INDEX, i); io_wait();
+        val = inb(VGA_SEQ_DATA); io_wait();
+        char prefix_buf[8]; 
+        strcpy(prefix_buf, "SR");
+        byte_to_hex_string(i, hex_str);
+        strcat(prefix_buf, hex_str);
+        strcat(prefix_buf, ": ");
+        print_and_advance(prefix_buf, val);
+    }
+
+    
+    print_and_advance("--- CRTC ---", 0); // Encabezado
+   
+    outb(VGA_CRTC_INDEX, 0x11); io_wait();
+    uint8_t cr11_val = inb(VGA_CRTC_DATA); io_wait();
+    outb(VGA_CRTC_DATA, cr11_val & 0x7F); io_wait();
+    for (i = 0; i < 25; i++) { 
+									
+        outb(VGA_CRTC_INDEX, i); io_wait();
+        val = inb(VGA_CRTC_DATA); io_wait();
+        char prefix_buf[8]; 
+        strcpy(prefix_buf, "CR");
+        byte_to_hex_string(i, hex_str);
+        strcat(prefix_buf, hex_str);
+        strcat(prefix_buf, ": ");
+        print_and_advance(prefix_buf, val);
+    }
+    
+    outb(VGA_CRTC_INDEX, 0x11); io_wait();
+    outb(VGA_CRTC_DATA, cr11_val); io_wait(); 
+
+    
+    print_and_advance("--- GRAFICOS ---", 0); 
+    for (i = 0; i < 9; i++) { 
+        outb(VGA_GC_INDEX, i); io_wait();
+        val = inb(VGA_GC_DATA); io_wait();
+        char prefix_buf[8]; 
+        strcpy(prefix_buf, "GR");
+        byte_to_hex_string(i, hex_str);
+        strcat(prefix_buf, hex_str);
+        strcat(prefix_buf, ": ");
+        print_and_advance(prefix_buf, val);
+    }
+
+    
+    print_and_advance("--- ATRIBUTOS ---", 0); 
+    for (i = 0; i < 21; i++) { 
+        inb(VGA_INSTAT_READ); io_wait(); 
+        outb(VGA_AC_INDEX, i); io_wait(); 
+        val = inb(VGA_AC_READ); io_wait(); 
+        char prefix_buf[8]; 
+        strcpy(prefix_buf, "AC");
+        byte_to_hex_string(i, hex_str);
+        strcat(prefix_buf, hex_str);
+        strcat(prefix_buf, ": ");
+        print_and_advance(prefix_buf, val);
+    }
+    
+    inb(VGA_INSTAT_READ); io_wait(); 
+    outb(VGA_AC_INDEX, 0x20); io_wait(); 
+
+    
+}
