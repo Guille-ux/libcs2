@@ -89,7 +89,7 @@ void vga_setmode(uint8_t mode) {
 				outb(VGA_ACR_INDEX_WRITE_PORT, vga_attr_regs_mode_03[i]); io_wait();
 			}
 
-			outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); // enable video, idk
+			//outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); // enable video, idk
 			io_wait();
 			vga_clear(stdcolor);
 			vga_setcur(0, 0);
