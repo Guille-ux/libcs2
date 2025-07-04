@@ -16,11 +16,11 @@ uint8_t current_mode=0x03;
 
 
 uint8_t vga_seq_regs_mode_03[] = {
-    0x03, // SR01: Clocking Mode Register
-    0x01, // SR02: Map Mask Register
+    0x01, // SR01: Clocking Mode Register
+    0x03, // SR02: Map Mask Register
     0x0F, // SR03: Character Map Select
     0x00, // SR04: Memory Mode Register
-    0x0E  // SR05: Address Mode
+    0x0E  // SR05: Extended Memory Register (si tu hardware lo soporta, o 0x02 para modo texto común)
 };
 uint8_t VGA_SEQ_REG_COUNT_MODE_03 = sizeof(vga_seq_regs_mode_03);
 
@@ -56,40 +56,37 @@ void vga_setmode(uint8_t mode) {
 		case (0x03): {
 			outb(VGA_MISC_WRITE, 0x67);
 			io_wait();
-			outb(VGA_SEQ_INDEX_PORT, 0x00); // select a register from sequencer
-
-			outb(VGA_SEQ_READ_WRITE_INDEX, 0x01);
+			outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();// select a register from sequencer
+			outb(VGA_SEQ_READ_WRITE_INDEX, 0x01); io_wait();
 			for (i=0;i<VGA_SEQ_REG_COUNT_MODE_03;i++) {
-				outb(VGA_SEQ_INDEX_PORT, i);
-				outb(VGA_SEQ_READ_WRITE_INDEX, vga_seq_regs_mode_03[i]);
+				outb(VGA_SEQ_INDEX_PORT, i+1); io_wait();
+				outb(VGA_SEQ_READ_WRITE_INDEX, vga_seq_regs_mode_03[i]); io_wait();
 			}
 			
-			outb(VGA_SEQ_INDEX_PORT, 0x00);
+			outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();
 			outb(VGA_SEQ_READ_WRITE_INDEX, 0x03);
 			io_wait();
 
-			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x11);
-			temp = inb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE);
-			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, temp & 0x7F);
-			io_wait();
+			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x11); io_wait();
+			temp = inb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE); io_wait();
+			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, temp & 0x7F); io_wait();
+			
 
 			for (i=0;i<VGA_CRTC_REG_COUNT_MODE_03;i++) {
-				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, i);
-				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, vga_crtc_regs_mode_03[i]);
+				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, i); io_wait();
+				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, vga_crtc_regs_mode_03[i]); io_wait();
 			}
-			io_wait();
 
 			for (i=0;i<VGA_GFX_REG_COUNT_MODE_03;i++) {
-				outb(VGA_GCR_INDEX_PORT, i);
-				outb(VGA_GCR_READ_WRITE_INDEX, vga_gfx_regs_mode_03[i]);
+				outb(VGA_GCR_INDEX_PORT, i); io_wait();
+				outb(VGA_GCR_READ_WRITE_INDEX, vga_gfx_regs_mode_03[i]); io_wait();
 			}
 
-			inb(VGA_ACR_RESET);
+			inb(VGA_ACR_RESET); io_wait();
 
 			for (i=0;i<VGA_ATTR_REG_COUNT_MODE_03;i++) {
-				outb(VGA_ACR_INDEX_WRITE_PORT, i);
-				outb(VGA_ACR_INDEX_WRITE_PORT, vga_attr_regs_mode_03[i]);
-				inb(VGA_ACR_RESET);
+				outb(VGA_ACR_INDEX_WRITE_PORT, i); io_wait();
+				outb(VGA_ACR_INDEX_WRITE_PORT, vga_attr_regs_mode_03[i]); io_wait();
 			}
 
 			outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); // enable video, idk
