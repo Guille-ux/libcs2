@@ -8,11 +8,11 @@
 
 #define VGA_TEXT_MODE_80x25_ID 0x03
 
-extern height;
-extern width;
-extern global_x;
-extern global_y;
-extern current_mode;
+extern uint16_t height;
+extern uint16_t width;
+extern uint16_t global_x;
+extern uint16_t global_y;
+extern uint8_t current_mode;
 
 typedef struct vga_char {
 	uint8_t character;
