@@ -50,4 +50,5 @@ void vga_putpix(uint16_t x, uint16_t y, rgb color);
 void vga_setmode(uint8_t new_mode);
 void vga_scroll();
 void vga_fill_line(uint16_t line, vga_char character);
+void vga_minimode();
 #endif
