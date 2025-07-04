@@ -108,7 +108,7 @@ void vga_setmode(uint8_t mode) {
             		}
 
 		        for (i = 0; i < G_GFX_REG_COUNT_MODE03; i++) {
-                		outb(VGA_GCR_INDEX, i); io_wait();
+                		outb(VGA_GCR_INDEX_PORT, i); io_wait();
                 		outb(VGA_GCR_READ_WRITE_INDEX, g_gfx_regs_mode03[i]); io_wait();
             		}
             		inb(VGA_ACR_RESET); 
