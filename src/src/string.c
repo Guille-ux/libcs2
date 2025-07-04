@@ -1,6 +1,24 @@
 #include "../include/string.h"
 
 
+char* strcpy(char* dest, const char* src) {
+    char* original_dest = dest;
+    while ((*dest++ = *src++) != '\0');
+    return original_dest;
+}
+
+
+char* strcat(char* dest, const char* src) {
+    
+    char* original_dest = dest;
+    while (*dest != '\0') {
+        dest++;
+    }
+    
+    while ((*dest++ = *src++) != '\0');
+    return original_dest;
+}
+
 void byte_to_hex_string(uint8_t byte, char* buffer) {
     const char hex_digits[] = "0123456789ABCDEF";
     buffer[0] = hex_digits[(byte >> 4) & 0x0F];
