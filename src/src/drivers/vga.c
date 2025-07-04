@@ -60,7 +60,7 @@ void vga_setmode(uint8_t mode) {
 
 			outb(VGA_SEQ_READ_WRITE_INDEX, 0x01);
 			for (i=0;i<VGA_SEQ_REG_COUNT_MODE_03;i++) {
-				outb(VGA_SEQ_INDEX_PORT, i+1);
+				outb(VGA_SEQ_INDEX_PORT, i);
 				outb(VGA_SEQ_READ_WRITE_INDEX, vga_seq_regs_mode_03[i]);
 			}
 			
