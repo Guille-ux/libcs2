@@ -51,4 +51,5 @@ void vga_setmode(uint8_t new_mode);
 void vga_scroll();
 void vga_fill_line(uint16_t line, vga_char character);
 void dump_vga_registers();
+void dump_vga_registers_minimal_read_only();
 #endif

@@ -325,3 +325,54 @@ void dump_vga_registers() {
 
     
 }
+// temporal, función generada con IA para debugging
+void dump_vga_registers_minimal_read_only() {
+    uint16_t i;
+    // Usamos 'volatile' para asegurarnos de que el compilador no optimice las lecturas.
+    volatile uint8_t val;
+
+    // --- Lectura de Registros ---
+
+    // Misc Output Register (0x3CC)
+    val = inb(VGA_MISC_READ);
+
+    // Registros del Secuenciador (0x3C4/0x3C5)
+    for (i = 0; i < 5; i++) { // SR00 a SR04
+        outb(VGA_SEQ_INDEX, i); io_wait();
+        val = inb(VGA_SEQ_DATA); io_wait();
+    }
+
+    // Registros del CRTC (0x3D4/0x3D5)
+    // Desbloquear CRTC 0-7 temporalmente si están bloqueados (CR11 bit 7)
+    outb(VGA_CRTC_INDEX, 0x11); io_wait();
+    uint8_t cr11_val = inb(VGA_CRTC_DATA); io_wait();
+    outb(VGA_CRTC_DATA, cr11_val & 0x7F); io_wait(); // Limpiar bit 7
+
+    for (i = 0; i < 25; i++) { // CR00 a CR24
+        outb(VGA_CRTC_INDEX, i); io_wait();
+        val = inb(VGA_CRTC_DATA); io_wait();
+    }
+    // Restaurar CRTC 0-7 si estaban bloqueados
+    outb(VGA_CRTC_INDEX, 0x11); io_wait();
+    outb(VGA_CRTC_DATA, cr11_val); io_wait();
+
+    // Registros del Controlador Gráfico (0x3CE/0x3CF)
+    for (i = 0; i < 9; i++) { // GR00 a GR08
+        outb(VGA_GC_INDEX, i); io_wait();
+        val = inb(VGA_GC_DATA); io_wait();
+    }
+
+    // Registros del Controlador de Atributos (AC00 a AC14)
+    for (i = 0; i < 21; i++) { // AC00 a AC14 (total 21 regs)
+        inb(VGA_INSTAT_READ); io_wait(); // Resetear flip-flop del AC (0x3DA)
+        outb(VGA_AC_INDEX, i); io_wait(); // Escribir índice (0x3C0)
+        val = inb(VGA_AC_READ); io_wait(); // Leer dato (0x3C1)
+    }
+    // Re-habilitar el display del AC al final de las lecturas
+    inb(VGA_INSTAT_READ); io_wait();
+    outb(VGA_AC_INDEX, 0x20); io_wait();
+
+    // Si tu kernel llega a este punto, significa que la lectura de registros no causó el crash.
+    // Mantendremos el bucle infinito para que no vuelva a GRUB si todo lo anterior pasó bien.
+    while(1);
+}
