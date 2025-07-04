@@ -143,7 +143,7 @@ void vga_clear(MultiColor color) {
 
 void vga_putchar(uint16_t x, uint16_t y, char c, uint8_t attr) {
 	if (x > width || y > height) return;
-	vga_char *vga_ptr = (vga_char*)0xB8000 + x + y*width;
+	volatile vga_char *vga_ptr = (vga_char*)0xB8000 + x + y*width;
 
 	vga_char chr;
 	chr.character = c;
