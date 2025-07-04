@@ -73,8 +73,8 @@ void vga_setmode(uint8_t mode) {
 			
 
 			for (i=0;i<VGA_CRTC_REG_COUNT_MODE_03;i++) {
-				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, i); io_wait();
-				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, vga_crtc_regs_mode_03[i]); io_wait();
+				outb(VGA_CRTC_INDEX_BASE_B + VGA_CRTC_INDEX_PORT, i); io_wait();
+				outb(VGA_CRTC_INDEX_BASE_B + VGA_CRTC_READ_WRITE, vga_crtc_regs_mode_03[i]); io_wait();
 			}
 
 			for (i=0;i<VGA_GFX_REG_COUNT_MODE_03;i++) {
