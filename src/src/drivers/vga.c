@@ -374,5 +374,4 @@ void dump_vga_registers_minimal_read_only() {
 
     // Si tu kernel llega a este punto, significa que la lectura de registros no causó el crash.
     // Mantendremos el bucle infinito para que no vuelva a GRUB si todo lo anterior pasó bien.
-    while(1);
 }
