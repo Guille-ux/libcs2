@@ -47,22 +47,18 @@ uint8_t vga_attr_regs_mode_03[] = {
 uint8_t VGA_ATTR_REG_COUNT_MODE_03 = sizeof(vga_attr_regs_mode_03);
 
 
-uint8_t vga_misc_out_reg_mode_03 = 0xE3;
+// idk uint8_t vga_misc_out_reg_mode_03 = 0xE3;
 
 void vga_setmode(uint8_t mode) {
 	uint16_t i;
 	uint8_t temp;
 	switch (mode) {
 		case (0x03): {
-			temp = inb(VGA_MISC_READ); // read the current state
-			outb(VGA_MISC_WRITE, temp & ~0xCF); // 0xCF = 11001111b, ~0xCF = 00110000
-			
+			outb(VGA_MISC_WRITE, 0x67);
+			io_wait();
 			outb(VGA_SEQ_INDEX_PORT, 0x00); // select a register from sequencer
+
 			outb(VGA_SEQ_READ_WRITE_INDEX, 0x01);
-
-
-
-			outb(VGA_MISC_WRITE, vga_misc_out_reg_mode_03); // for mode 0x03
 			for (i=0;i<VGA_SEQ_REG_COUNT_MODE_03;i++) {
 				outb(VGA_SEQ_INDEX_PORT, i+1);
 				outb(VGA_SEQ_READ_WRITE_INDEX, vga_seq_regs_mode_03[i]);
@@ -70,16 +66,18 @@ void vga_setmode(uint8_t mode) {
 			
 			outb(VGA_SEQ_INDEX_PORT, 0x00);
 			outb(VGA_SEQ_READ_WRITE_INDEX, 0x03);
-
+			io_wait();
 
 			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x11);
 			temp = inb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE);
 			outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, temp & 0x7F);
+			io_wait();
 
 			for (i=0;i<VGA_CRTC_REG_COUNT_MODE_03;i++) {
 				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, i);
 				outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, vga_crtc_regs_mode_03[i]);
 			}
+			io_wait();
 
 			for (i=0;i<VGA_GFX_REG_COUNT_MODE_03;i++) {
 				outb(VGA_GCR_INDEX_PORT, i);
@@ -95,8 +93,10 @@ void vga_setmode(uint8_t mode) {
 			}
 
 			outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); // enable video, idk
-			outb(VGA_MISC_WRITE, vga_misc_out_reg_mode_03);
-
+			io_wait();
+			vga_clear(stdcolor);
+			vga_setcur(0, 0);
+			return;
 			     }
 		default: return;
 	}
