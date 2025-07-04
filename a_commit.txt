@@ -1,0 +1,1 @@
+Finnishing VGA Drivers for Text Modes!, next: add somethign to change resolution of the text mode easier, global_vars: global_x, global_y, height (vga height) and width (vga width)

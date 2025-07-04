@@ -23,4 +23,15 @@ typedef struct {
  *
  */
 
+typedef struct MultiColor {
+	union {
+		uint8_t text_mode;
+		rgb graphic_mode;
+	} as;
+} MultiColor;
+
+#include "vga.h"
+
+MultiColor stdcolor={.as.text_mode=(VGA_COLOR_LIGHT_GREY || (VGA_COLOR_BLACK << 4)), .as.graphic_mode={.r=0,.g=0,.b=0}};
+
 #endif
