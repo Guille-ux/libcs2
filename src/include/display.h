@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+
 typedef struct {
 	uint8_t r;
 	uint8_t g;
@@ -31,7 +32,6 @@ typedef struct MultiColor {
 } MultiColor;
 
 #include "vga.h"
-
 MultiColor stdcolor={.as.text_mode=(VGA_COLOR_LIGHT_GREY || (VGA_COLOR_BLACK << 4)), .as.graphic_mode={.r=0,.g=0,.b=0}};
 
 #endif
