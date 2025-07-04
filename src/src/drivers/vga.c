@@ -21,7 +21,7 @@ uint8_t g_seq_regs_mode03[] = {
     0x01, // SR01: Clocking Mode (8 dots/character, screen off)
     0x03, // SR02: Map Mask (all planes enabled)
     0x00, // SR03: Character Map Select (default font)
-    0x02  // SR04: Memory Mode (text mode, sequential addressing)
+    0x06  // SR04: Memory Mode (text mode, sequential addressing)
 };
 uint8_t G_SEQ_REG_COUNT_MODE03 = sizeof(g_seq_regs_mode03);
 
