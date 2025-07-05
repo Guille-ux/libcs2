@@ -11,4 +11,6 @@ void byte_to_hex_string(uint8_t byte, char* buffer);
 char *strcat(char *dest, const char *src);
 char *strcpy(char *dest, const char *src);
 
+
+
 #endif

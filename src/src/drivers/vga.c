@@ -94,52 +94,75 @@ uint8_t g_attr_regs_mode03[] = {
 };
 uint8_t G_ATTR_REG_COUNT_MODE03 = sizeof(g_attr_regs_mode03);
 
-void vga_start() {
-	uint16_t i;
-	uint8_t temp;
-	{
-			outb(VGA_MISC_WRITE, g_misc_output_reg_mode03); io_wait();
+void vga_start() { 
+    uint16_t i;
+    uint8_t temp;
 
-            		outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();
-            		outb(VGA_SEQ_READ_WRITE_INDEX, 0x01); io_wait(); 
+    
+    outb(VGA_MISC_WRITE, g_misc_output_reg_mode03); io_wait();
+    io_wait();
 
-            		for (i = 0; i < G_SEQ_REG_COUNT_MODE03; i++) {
-                		outb(VGA_SEQ_INDEX_PORT, i + 1); io_wait(); 
-                		outb(VGA_SEQ_READ_WRITE_INDEX, g_seq_regs_mode03[i]); io_wait();
-            		}
+    
+    outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait(); 
+    outb(VGA_SEQ_READ_WRITE_INDEX, 0x01); io_wait();
+    for (i = 0; i < G_SEQ_REG_COUNT_MODE03; i++) {
+       
+        outb(VGA_SEQ_INDEX_PORT, i + 1); io_wait();
+        outb(VGA_SEQ_READ_WRITE_INDEX, g_seq_regs_mode03[i]); io_wait();
+    }
 
-            		outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();
-            		outb(VGA_SEQ_READ_WRITE_INDEX, 0x03); io_wait(); 
-            		outb(VGA_CRTC_INDEX_PORT + VGA_CRTC_INDEX_BASE_A, 0x11); io_wait();
-            		temp = inb(VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A); io_wait();
-            		outb(VGA_CRTC_READ_WRITE+VGA_CRTC_INDEX_BASE_A, temp & 0x7F); io_wait(); 	      		      
-			for (i = 0; i < G_CRTC_REG_COUNT_MODE03; i++) {
-		                outb(VGA_CRTC_INDEX_PORT+VGA_CRTC_INDEX_BASE_A, i); io_wait();
-		                outb(VGA_CRTC_READ_WRITE+VGA_CRTC_INDEX_BASE_A, g_crtc_regs_mode03[i]); io_wait();
-            		}
+    outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();
+    outb(VGA_SEQ_READ_WRITE_INDEX, 0x03); io_wait(); 
 
-		        for (i = 0; i < G_GFX_REG_COUNT_MODE03; i++) {
-                		outb(VGA_GCR_INDEX_PORT, i); io_wait();
-                		outb(VGA_GCR_READ_WRITE_INDEX, g_gfx_regs_mode03[i]); io_wait();
-            		}
-            		inb(VGA_ACR_RESET); 
-            		io_wait(); 
-            		for (i = 0; i < G_ATTR_REG_COUNT_MODE03; i++) {
-                		outb(VGA_ACR_INDEX_WRITE_PORT, i); io_wait();      
-                		outb(VGA_ACR_INDEX_WRITE_PORT, g_attr_regs_mode03[i]); io_wait();              
-            		}
+    io_wait(); 
+    io_wait();
+    io_wait();
 
-            		outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); io_wait();
-            
-                       	vga_clear(stdcolor); 
-            		vga_setcur(0, 0);
-	}
-        return;
+    
+    outb(VGA_CRTC_INDEX_PORT + VGA_CRTC_INDEX_BASE_A, 0x11); io_wait();
+    temp = inb(VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A); io_wait();
+    outb(VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A, temp & 0x7F); io_wait(); 
+
+    for (i = 0; i < G_CRTC_REG_COUNT_MODE03; i++) { 
+        outb(VGA_CRTC_INDEX_PORT + VGA_CRTC_INDEX_BASE_A, i); io_wait();
+        outb(VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A, g_crtc_regs_mode03[i]); io_wait();
+    }
+
+    outb(VGA_CRTC_INDEX_PORT + VGA_CRTC_INDEX_BASE_A, 0x11); io_wait();
+    outb(VGA_CRTC_READ_WRITE + VGA_CRTC_INDEX_BASE_A, temp); io_wait();  
+    io_wait();
+    io_wait();
+
+    
+    for (i = 0; i < G_GFX_REG_COUNT_MODE03; i++) {
+        outb(VGA_GCR_INDEX_PORT, i); io_wait();
+        outb(VGA_GCR_READ_WRITE_INDEX, g_gfx_regs_mode03[i]); io_wait();
+    }
+
+    io_wait(); 
+    io_wait();
+
+    
+    inb(VGA_ACR_RESET); 
+    io_wait();
+
+    for (i = 0; i < G_ATTR_REG_COUNT_MODE03; i++) {
+        outb(VGA_ACR_INDEX_WRITE_PORT, i | 0x20); io_wait(); 
+        outb(VGA_ACR_READ_WRITE_PORT, g_attr_regs_mode03[i]); io_wait(); 
+    }
+
+    inb(VGA_ACR_RESET); 
+    io_wait();
+    outb(VGA_ACR_INDEX_WRITE_PORT, 0x20); io_wait();
+   
+    io_wait();
+    io_wait();
+
+    
+    vga_clear(stdcolor);
+    vga_setcur(0, 0);
+    vga_print_string(0, 0, "VGA : [ OK ]", 0x0F);
 }
-
-// En vga.c, reemplaza toda tu función vga_setmode por esta:
-
-
 
 void vga_clear(MultiColor color) {
 	if (current_mode==0x03) {
