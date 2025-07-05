@@ -147,7 +147,7 @@ void vga_start() {
     io_wait();
 
     for (i = 0; i < G_ATTR_REG_COUNT_MODE03; i++) {
-        outb(VGA_ACR_INDEX_WRITE_PORT, i | 0x20); io_wait(); 
+        outb(VGA_ACR_INDEX_WRITE_PORT, i); io_wait(); 
         outb(VGA_ACR_READ_INDEX, g_attr_regs_mode03[i]); io_wait(); 
     }
 
