@@ -8,11 +8,13 @@
 
 #define VGA_TEXT_MODE_80x25_ID 0x03
 
-extern uint16_t height;
-extern uint16_t width;
-extern uint16_t global_x;
-extern uint16_t global_y;
+extern uint16_t vga_height;
+extern uint16_t vga_width;
+extern uint16_t vga_global_x;
+extern uint16_t vga_global_y;
 extern uint8_t current_mode;
+extern uint16_t vga_cur_x;
+extern uint16_t vga_cur_y;
 
 typedef struct vga_char {
 	uint8_t character;
@@ -43,13 +45,18 @@ typedef enum vga_color vga_color;
 
 void vga_init();
 void vga_clear(MultiColor color);
-void vga_putchar(uint16_t x, uint16_t y, char c, uint8_t attr);
-void vga_print_string(uint16_t x, uint16_t y, const char *str, uint8_t attr);
-void vga_setcur(uint16_t x, uint16_t y);
+void vga_putchar(size_t x, size_t y, char c, uint8_t attr);
+void vga_print_string(size_t x, size_t y, const char *str, uint8_t attr);
+void vga_setcur(size_t x, size_t y);
 void vga_start();
 void vga_disable();
 void vga_enable();
 void vga_scroll();
-void vga_fill_line(uint16_t line, vga_char character);
+void vga_fill_line(size_t line, vga_char character);
 void dump_vga_registers_minimal_read_only();
+size_t vga_get_max_x();
+size_t vga_get_max_y();
+size_t vga_get_cur_x();
+size_t vga_get_cur_y();
+
 #endif

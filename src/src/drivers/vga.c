@@ -7,10 +7,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-uint16_t height=25;
-uint16_t width=80;
-uint16_t global_x=0;
-uint16_t global_y=0;
+uint16_t vga_height=25;
+uint16_t vga_width=80;
+uint16_t vga_global_x=0;
+uint16_t vga_global_y=0;
+uint16_t vga_cur_x=0;
+uint16_t vga_cur_y=0;
 uint8_t current_mode=0x03;
 
 
@@ -104,84 +106,84 @@ void vga_start() {
 
 void vga_clear(MultiColor color) {
 	char chr=' ';
-	for (uint16_t x=0;x<width;x++) {
-		for (uint16_t y=0;y<height;y++) {
+	for (uint16_t x=0;x<vga_width;x++) {
+		for (uint16_t y=0;y<vga_height;y++) {
 			vga_putchar(x, y, chr, color.as.text_mode);
 		}
 	}
 }
 
-void vga_putchar(uint16_t x, uint16_t y, char c, uint8_t attr) {
-	if (x > width || y > height) return;
+void vga_putchar(size_t x, size_t y, char c, MultiColor color) {
+	if (x > vga_width || y > vga_height) return;
 	volatile vga_char *vga_ptr = (vga_char*)0xB8000 + x + y*width;
 
 	vga_char chr;
 	chr.character = c;
-	chr.attr = attr;
+	chr.attr = color.as.text_mode;
 	*vga_ptr = chr;
 }
 
-void vga_print_string(uint16_t x, uint16_t y, const char *str, uint8_t attr) {
-	global_x = x;
-	global_y = y;
+void vga_print_string(size_t x, size_t y, const char *str, MultiColor color) {
+	vga_global_x = x;
+	vga_global_y = y;
+	uint8_t attr=color.as.text_mode;
 
 	for (size_t i=0;i<strlen(str);i++) {
 		char c=str[i];
 		if (c=='\n') {
-			global_x=0;
-			global_y++;
+			vga_global_x=0;
+			vga_global_y++;
 		} else if (c=='\r') {
-			global_x=0;
+			vga_global_x=0;
 		} else {
-			vga_putchar(global_x, global_y, c, attr);
-			global_x++;
+			vga_putchar(vga_global_x, vga_global_y, c, attr);
+			vga_global_x++;
 		}
 
-		if (global_x>=width) {
-			global_x=0;
-			global_y++;
+		if (vga_global_x>=vga_width) {
+			vga_global_x=0;
+			vga_global_y++;
 		}
-		if (global_y>=height) {
+		if (vga_global_y>=vga_height) {
 			vga_scroll();
-			global_y=height-1;
-			global_x=0;
+			vga_global_y=vga_height-1;
+			vga_global_x=0;
 		}
 	}
-	vga_setcur(global_x, global_y);
+	vga_setcur(vga_global_x, vga_global_y);
 }
 
-void vga_setcur(uint16_t x, uint16_t y) {
-	if (x >= width) x = width - 1;
-	if (y >= height) y = height - 1;
+void vga_setcur(size_t x, size_t y) {
+	if (x >= vga_width) x = vga_width - 1;
+	if (y >= vga_height) y = vga_height - 1;
 
-	uint16_t pos = x + y*width;
+	uint16_t pos = x + y*vga_width;
 
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x0E); // read headers/vga.h
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, (uint8_t)((pos >> 8) & 0xFF)); // for little endian
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x0F); // read headers/vga.h
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, (uint8_t)(pos & 0xFF));
+	vga_cur_x=x;
+	vga_cur_y=y;
 }
 void vga_scroll() {
 	vga_char vacio = {' ', stdcolor.as.text_mode};
-	memcpy((void *)VGA_TEXT_MODE_BEGIN, (const void *)(VGA_TEXT_MODE_BEGIN + width), sizeof(vga_char)*width*(height-1));
-	vga_fill_line(height-1, vacio);
+	memcpy((void *)VGA_TEXT_MODE_BEGIN, (const void *)(VGA_TEXT_MODE_BEGIN + vga_width), sizeof(vga_char)*vga_width*(vga_height-1));
+	vga_fill_line(vga_height-1, vacio);
 
-	global_x = 0;
-	global_y = height-1;
-	vga_setcur(global_x, global_y);
+	vga_global_x = 0;
+	vga_global_y = vga_height-1;
+	vga_setcur(vga_global_x, vga_global_y);
 }
 
 void vga_init() {
 	dump_vga_registers_minimal_read_only();
 }
 
-void vga_fill_line(uint16_t line, vga_char character) {
-	if (current_mode==0x03) {
-		for (uint16_t i=0;i<width;i++) {
-			vga_putchar(i, line, character.character, character.attr);
-		}
-	} else {
-		// for the future
+void vga_fill_line(size_t line, vga_char character) {
+	if (line >= vga_height) return;
+	for (uint16_t i=0;i<vga_width;i++) {
+		vga_putchar(i, line, character.character, character.attr);
 	}
 }
 /*
@@ -340,4 +342,20 @@ void vga_enable() {
 	tmp=inb(VGA_SEQ_READ_WRITE_INDEX);
 	
 	outb(VGA_SEQ_READ_WRITE_INDEX, tmp & ~0x20);
+}
+
+size_t vga_get_max_x() {
+	return vga_width;
+}
+
+size_t vga_get_max_y() {
+	return vga_height;
+}
+
+size_t vga_get_cur_x() {
+	return vga_cur_x;
+}
+
+size_t vga_get_cur_y() {
+	return vga_cur_y;
 }
