@@ -98,7 +98,7 @@ void vga_start() {
     uint16_t i;
     uint8_t temp;
 
-    
+    vga_disable();
     outb(VGA_MISC_WRITE, g_misc_output_reg_mode03); io_wait();
     io_wait();
 
@@ -158,7 +158,7 @@ void vga_start() {
     io_wait();
     io_wait();
 
-    
+    vga_enable();
     vga_clear(stdcolor);
     vga_setcur(0, 0);
     vga_print_string(0, 0, "VGA : [ OK ]", 0x0F);
