@@ -41,15 +41,15 @@ enum vga_color {
 typedef enum vga_color vga_color;
 
 
-void vga_init(uint8_t mode);
+void vga_init();
 void vga_clear(MultiColor color);
 void vga_putchar(uint16_t x, uint16_t y, char c, uint8_t attr);
 void vga_print_string(uint16_t x, uint16_t y, const char *str, uint8_t attr);
 void vga_setcur(uint16_t x, uint16_t y);
-void vga_putpix(uint16_t x, uint16_t y, rgb color);
-void vga_setmode(uint8_t new_mode);
+void vga_start();
+void vga_disable();
+void vga_enable();
 void vga_scroll();
 void vga_fill_line(uint16_t line, vga_char character);
-void dump_vga_registers();
 void dump_vga_registers_minimal_read_only();
 #endif

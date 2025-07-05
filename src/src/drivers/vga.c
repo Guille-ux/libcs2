@@ -94,11 +94,10 @@ uint8_t g_attr_regs_mode03[] = {
 };
 uint8_t G_ATTR_REG_COUNT_MODE03 = sizeof(g_attr_regs_mode03);
 
-void vga_setmode(uint8_t mode) {
+void vga_start() {
 	uint16_t i;
 	uint8_t temp;
-	switch (mode) {
-		case (0x03): {
+	{
 			outb(VGA_MISC_WRITE, g_misc_output_reg_mode03); io_wait();
 
             		outb(VGA_SEQ_INDEX_PORT, 0x00); io_wait();
@@ -134,10 +133,8 @@ void vga_setmode(uint8_t mode) {
             
                        	vga_clear(stdcolor); 
             		vga_setcur(0, 0);
-            		return;
-			     }
-		default: return;
 	}
+        return;
 }
 
 // En vga.c, reemplaza toda tu función vga_setmode por esta:
@@ -207,11 +204,6 @@ void vga_setcur(uint16_t x, uint16_t y) {
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_INDEX_PORT, 0x0F); // read headers/vga.h
 	outb(VGA_CRTC_INDEX_BASE_A + VGA_CRTC_READ_WRITE, (uint8_t)(pos & 0xFF));
 }
-
-void vga_putpix(uint16_t x, uint16_t y, rgb color) {
-	// anything actually
-}
-
 void vga_scroll() {
 	vga_char vacio = {' ', stdcolor.as.text_mode};
 	memcpy((void *)VGA_TEXT_MODE_BEGIN, (const void *)(VGA_TEXT_MODE_BEGIN + width), sizeof(vga_char)*width*(height-1));
@@ -222,8 +214,8 @@ void vga_scroll() {
 	vga_setcur(global_x, global_y);
 }
 
-void vga_init(uint8_t mode) {
-	vga_setmode(mode);	// actualmente solo necesito esto ¿no?
+void vga_init() {
+	dump_vga_registers_minimal_read_only();
 }
 
 void vga_fill_line(uint16_t line, vga_char character) {
@@ -235,7 +227,8 @@ void vga_fill_line(uint16_t line, vga_char character) {
 		// for the future
 	}
 }
-void dump_vga_registers() {
+/*
+ void dump_vga_registers() {
     uint16_t i;
     char hex_str[3];
     char line_buffer[80];
@@ -325,53 +318,69 @@ void dump_vga_registers() {
 
     
 }
-// temporal, función generada con IA para debugging
+ */
 void dump_vga_registers_minimal_read_only() {
     uint16_t i;
-    // Usamos 'volatile' para asegurarnos de que el compilador no optimice las lecturas.
+    
     volatile uint8_t val;
 
-    // --- Lectura de Registros ---
+   
+    
+    g_misc_output_reg_mode03 = inb(VGA_MISC_READ);
 
-    // Misc Output Register (0x3CC)
-    val = inb(VGA_MISC_READ);
 
-    // Registros del Secuenciador (0x3C4/0x3C5)
-    for (i = 0; i < 5; i++) { // SR00 a SR04
+    for (i = 0; i < 5; i++) { 
         outb(VGA_SEQ_INDEX, i); io_wait();
-        val = inb(VGA_SEQ_DATA); io_wait();
+        g_seq_regs_mode03[i] = inb(VGA_SEQ_DATA); io_wait();
     }
 
-    // Registros del CRTC (0x3D4/0x3D5)
-    // Desbloquear CRTC 0-7 temporalmente si están bloqueados (CR11 bit 7)
+
     outb(VGA_CRTC_INDEX, 0x11); io_wait();
     uint8_t cr11_val = inb(VGA_CRTC_DATA); io_wait();
-    outb(VGA_CRTC_DATA, cr11_val & 0x7F); io_wait(); // Limpiar bit 7
+    outb(VGA_CRTC_DATA, cr11_val & 0x7F); io_wait(); 
 
-    for (i = 0; i < 25; i++) { // CR00 a CR24
+    for (i = 0; i < 25; i++) { 
         outb(VGA_CRTC_INDEX, i); io_wait();
-        val = inb(VGA_CRTC_DATA); io_wait();
+        g_crtc_regs_mode03[i] = inb(VGA_CRTC_DATA); io_wait();
     }
-    // Restaurar CRTC 0-7 si estaban bloqueados
+   
     outb(VGA_CRTC_INDEX, 0x11); io_wait();
     outb(VGA_CRTC_DATA, cr11_val); io_wait();
 
-    // Registros del Controlador Gráfico (0x3CE/0x3CF)
-    for (i = 0; i < 9; i++) { // GR00 a GR08
+    
+    for (i = 0; i < 9; i++) { 
         outb(VGA_GC_INDEX, i); io_wait();
-        val = inb(VGA_GC_DATA); io_wait();
+        g_gfx_regs_mode03[i] = inb(VGA_GC_DATA); io_wait();
     }
 
-    // Registros del Controlador de Atributos (AC00 a AC14)
-    for (i = 0; i < 21; i++) { // AC00 a AC14 (total 21 regs)
-        inb(VGA_INSTAT_READ); io_wait(); // Resetear flip-flop del AC (0x3DA)
-        outb(VGA_AC_INDEX, i); io_wait(); // Escribir índice (0x3C0)
-        val = inb(VGA_AC_READ); io_wait(); // Leer dato (0x3C1)
+    
+    for (i = 0; i < 21; i++) { 
+        inb(VGA_INSTAT_READ); io_wait(); 
+        outb(VGA_AC_INDEX, i); io_wait(); 
+        g_attr_regs_mode03[i] = inb(VGA_AC_READ); io_wait(); 
     }
-    // Re-habilitar el display del AC al final de las lecturas
+
     inb(VGA_INSTAT_READ); io_wait();
     outb(VGA_AC_INDEX, 0x20); io_wait();
 
-    // Si tu kernel llega a este punto, significa que la lectura de registros no causó el crash.
-    // Mantendremos el bucle infinito para que no vuelva a GRUB si todo lo anterior pasó bien.
+}
+
+void vga_disable() {
+	volatile uint8_t tmp;
+
+	outb(VGA_SEQ_INDEX_PORT, 0x01); // select clocking mode register
+	
+	tmp = inb(VGA_SEQ_READ_WRITE_INDEX);
+
+	outb(VGA_SEQ_READ_WRITE_INDEX, tmp | 0x20);
+}
+
+void vga_enable() {
+	volatile uint8_t tmp;
+
+	outb(VGA_SEQ_INDEX_PORT, 0x01);
+
+	tmp=inb(VGA_SEQ_READ_WRITE_INDEX);
+	
+	outb(VGA_SEQ_READ_WRITE_INDEX, tmp & ~0x20);
 }
