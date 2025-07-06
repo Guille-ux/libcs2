@@ -140,9 +140,10 @@ int kprintf(const char *format, ...) {
 						int number=va_arg(args, int);
 						char buffer[25];
 						int_to_dec_string(number, buffer);
-						while (*buffer) {
-							kprintf_putc(*buffer);
-							buffer++;
+						char *buffptr=buffer;
+						while (*buffptr) {
+							kprintf_putc(*buffptr);
+							buffptr++;
 						}
 						break;
 					  }
@@ -150,9 +151,10 @@ int kprintf(const char *format, ...) {
 						uintptr_t hex=va_arg(args, uintptr_t);
 						char buffer[sizeof(uintptr_t)*2+1];
 						uint_to_hex_string(hex, buffer);
-						while (*buffer) {
-							kprintf_putc(*buffer);
-							buffer++;
+						char *buffptr=buffer;
+						while (*buffptr) {
+							kprintf_putc(*buffptr);
+							buffptr++;
 						}
 						break;
 					  }
@@ -162,9 +164,10 @@ int kprintf(const char *format, ...) {
 						uint_to_hex_string(pointer, &buffer[2]);
 						buffer[0]='0';
 						buffer[1]='x';
-						while (*buffer) {
-							kprintf_putc(*buffer);
-							buffer++;
+						char *buffptr=buffer;
+						while (*buffptr) {
+							kprintf_putc(*buffptr);
+							buffptr++;
 						}
 						break;
 					  }
