@@ -97,10 +97,11 @@ void vga_start() {
     
     vga_clear(stdcolor);
     vga_setcur(0, 0);
-    
-    vga_print_string(0, 0, "VGA : [ ", 0x0F);
-    vga_print_string(8, 0, "OK", 0x02);
-    vga_print_string(11, 0, "]", 0x0F);
+    MultiColor tmp_color={.as.text_mode=0x0F};
+    MultiColor temp_color={.as.text_mode=0x02};
+    vga_print_string(0, 0, "VGA : [ ", tmp_color);
+    vga_print_string(8, 0, "OK", temp_color);
+    vga_print_string(11, 0, "]", tmp_color);
 
 }
 
