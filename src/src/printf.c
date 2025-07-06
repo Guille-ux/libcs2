@@ -185,6 +185,7 @@ int kprintf(const char *format, ...) {
 		} else {
 			kprintf_putc(*format);
 		}
+		format++;
 	}
 
 	va_end(args);
