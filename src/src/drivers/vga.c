@@ -181,9 +181,10 @@ void vga_init() {
 }
 
 void vga_fill_line(size_t line, vga_char character) {
+	MultiColor color = {.as.text_mode=character.attr, .as.graphic_mode={0x0F, 0x0F, 0x0F}};
 	if (line >= vga_height) return;
 	for (uint16_t i=0;i<vga_width;i++) {
-		vga_putchar(i, line, character.character, character.attr);
+		vga_putchar(i, line, character.character, color);
 	}
 }
 /*
