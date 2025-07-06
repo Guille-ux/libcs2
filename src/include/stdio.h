@@ -16,7 +16,7 @@ typedef struct {
 	void (*putchar)(size_t x, size_t y, char ch, MultiColor color);
 	void (*setcur)(size_t x, size_t y);
 	void (*clear)(MultiColor color);
-	void (*fill_line)(char ch, vga_char character);
+	void (*fill_line)(size_t line, vga_char character);
 	void (*scroll)(void);
 	bool active;
 	MultiColor default_color;

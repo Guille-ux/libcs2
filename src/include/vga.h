@@ -45,8 +45,8 @@ typedef enum vga_color vga_color;
 
 void vga_init();
 void vga_clear(MultiColor color);
-void vga_putchar(size_t x, size_t y, char c, uint8_t attr);
-void vga_print_string(size_t x, size_t y, const char *str, uint8_t attr);
+void vga_putchar(size_t x, size_t y, char c, MultiColor color);
+void vga_print_string(size_t x, size_t y, const char *str, MultiColor color);
 void vga_setcur(size_t x, size_t y);
 void vga_start();
 void vga_disable();

@@ -126,7 +126,6 @@ void vga_putchar(size_t x, size_t y, char c, MultiColor color) {
 void vga_print_string(size_t x, size_t y, const char *str, MultiColor color) {
 	vga_global_x = x;
 	vga_global_y = y;
-	uint8_t attr=color.as.text_mode;
 
 	for (size_t i=0;i<strlen(str);i++) {
 		char c=str[i];
@@ -136,7 +135,7 @@ void vga_print_string(size_t x, size_t y, const char *str, MultiColor color) {
 		} else if (c=='\r') {
 			vga_global_x=0;
 		} else {
-			vga_putchar(vga_global_x, vga_global_y, c, attr);
+			vga_putchar(vga_global_x, vga_global_y, c, color);
 			vga_global_x++;
 		}
 
