@@ -17,7 +17,7 @@ extern size_t buff_cur_y;
 
 // actualmente se usan char's el objetivo es pasar a UNICODE, o a archivos de fuentes a secas
 
-void buff_init(char **buff, rgb **color_buff, size_t height, size_t width);
+void buff_init(char *buff, MultiColor *color_buff, size_t height, size_t width);
 void buff_setcur(size_t x, size_t y);
 void buff_print_string(size_t x, size_t y, const char *str, MultiColor color);
 void buff_putchar(size_t x, size_t y, char c, MultiColor color);
