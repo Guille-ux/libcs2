@@ -59,7 +59,7 @@ static void int_to_dec_string(int value, char *buffer) {
 	if (negative) tmp_buffer[k++]='-';
 	
 	while (k > 0) {
-		buffer[i++]=tmp_buffer[k--]
+		buffer[i++]=tmp_buffer[k--];
 	}
 
 	buffer[i]='\0';
@@ -124,7 +124,7 @@ int kprintf(const char *format, ...) {
 			format++;
 			switch (*format) {
 				case 's': {
-						const char *str=va_arg(args);
+						const char *str=va_arg(args, const char);
 						while (*str) {
 							kprintf_putc(*str);
 							str++;
@@ -132,12 +132,12 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'c': {
-						char c=va_arg(args);
+						char c=va_arg(args, char);
 						kprintf_putc(c);
 						break;
 					  }
 				case 'd': {
-						int number=va_arg(args);
+						int number=va_arg(args, int);
 						char buffer[25];
 						int_to_dec_string(number, buffer);
 						while (*buffer) {
@@ -147,7 +147,7 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'x': {
-						uintptr_t hex=va_arg(args);
+						uintptr_t hex=va_arg(args, uintptr_t);
 						char buffer[sizeof(uintptr_t)*2+1];
 						uint_to_hex_string(hex, buffer);
 						while (*buffer) {
@@ -157,7 +157,7 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'p': {
-						uintptr_t pointer=va_arg(args);
+						uintptr_t pointer=va_arg(args, uintptr_t);
 						char buffer[sizeof(uintptr_t)*2+4];
 						uint_to_hex_string(pointer, &buffer[2]);
 						buffer[0]='0';
