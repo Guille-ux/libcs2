@@ -9,6 +9,9 @@
 
 stdout stdout_interface={.active=false, .default_color={.as.text_mode=0x0F, .as.graphic_mode={0x0F, 0x0F, 0x0F}}};
 
+void kclear() {
+	stdout_interface.clear();
+}
 
 void stdout_init_vga() {
 	stdout_interface = (stdout){

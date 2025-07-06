@@ -28,5 +28,6 @@ void stdout_init_vga();
 void stdout_init_buffer();
 void disable_stdout();
 void enable_stdout();
+void kclear();
 
 #endif

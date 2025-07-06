@@ -94,7 +94,96 @@ static void kprintf_putc(char c) {
 			return;
 			   }
 		default: {
-			//i need to make this	
+			size_t current_x=stdout_interface.get_cur_x();
+			size_t current_y=stdout_interface.get_cur_y();
+
+			stdout_interface.putchar(current_x, current_y, c, stdout_interface.default_color);
+			size_t next_x=current_x+1;
+			size_t next_y=current_y;
+			if (next_x > stdout_interface.get_max_x()) {
+				next_x=0;
+				next_y++;
+				size_t max_y=stdout_interface.get_max_y();
+				if (next_y>max_y) {
+					stdout_interface.scroll();
+					next_y=max_y-1;
+				}
+			}
+			stdout_interface.setcur(next_x, next_y);
+			return;
 			 }
 	}
+}
+
+int kprintf(const char *format, ...) {
+	va_list args;
+	va_start(args, format);
+
+	while (*format) {
+		if (*format=='%') {
+			format++;
+			switch (*format) {
+				case 's': {
+						const char *str=va_arg(args);
+						while (*str) {
+							kprintf_putc(*str);
+							str++;
+						}
+						break;
+					  }
+				case 'c': {
+						char c=va_arg(args);
+						kprintf_putc(c);
+						break;
+					  }
+				case 'd': {
+						int number=va_arg(args);
+						char buffer[25];
+						int_to_dec_string(number, buffer);
+						while (*buffer) {
+							kprintf_putc(*buffer);
+							buffer++;
+						}
+						break;
+					  }
+				case 'x': {
+						uintptr_t hex=va_arg(args);
+						char buffer[sizeof(uintptr_t)*2+1];
+						uint_to_hex_string(hex, buffer);
+						while (*buffer) {
+							kprintf_putc(*buffer);
+							buffer++;
+						}
+						break;
+					  }
+				case 'p': {
+						uintptr_t pointer=va_arg(args);
+						char buffer[sizeof(uintptr_t)*2+4];
+						uint_to_hex_string(pointer, &buffer[2]);
+						buffer[0]='0';
+						buffer[1]='x';
+						while (*buffer) {
+							kprintf_putc(*buffer);
+							buffer++;
+						}
+						break;
+					  }
+				case '%': {
+						kprintf_putc('%');
+						break;
+					  }
+				default: {
+					kprintf_putc('%');
+					kprintf_putc(*format);
+					break;
+					 }
+			}
+			format++;
+		} else {
+			kprintf_putc(*format);
+		}
+	}
+
+	va_end(args);
+	return 0;
 }
