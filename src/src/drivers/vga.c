@@ -108,14 +108,14 @@ void vga_clear(MultiColor color) {
 	char chr=' ';
 	for (uint16_t x=0;x<vga_width;x++) {
 		for (uint16_t y=0;y<vga_height;y++) {
-			vga_putchar(x, y, chr, color.as.text_mode);
+			vga_putchar(x, y, chr, color);
 		}
 	}
 }
 
 void vga_putchar(size_t x, size_t y, char c, MultiColor color) {
 	if (x > vga_width || y > vga_height) return;
-	volatile vga_char *vga_ptr = (vga_char*)0xB8000 + x + y*width;
+	volatile vga_char *vga_ptr = (vga_char*)0xB8000 + x + y*vga_width;
 
 	vga_char chr;
 	chr.character = c;
