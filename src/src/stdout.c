@@ -15,18 +15,16 @@ void kclear() {
 }
 
 void stdout_init_vga() {
-	stdout_interface = (stdout){
-		.get_max_x=vga_get_max_x,
-		.get_max_y=vga_get_max_y,
-		.get_cur_x=vga_get_cur_x,
-		.get_cur_y=vga_get_cur_y,
-		.print_string=vga_print_string,
-		.putchar=vga_putchar,
-		.setcur=vga_setcur,
-		.clear=vga_clear,
-		.fill_line=vga_fill_line,
-		.scroll=vga_scroll
-	};
+	stdout_interface.get_max_x=vga_get_max_x;
+	stdout_interface.get_max_y=vga_get_max_y;
+	stdout_interface.get_cur_x=vga_get_cur_x;
+	stdout_interface.get_cur_y=vga_get_cur_y;
+	stdout_interface.print_string=vga_print_string,
+	stdout_interface.putchar=vga_putchar;
+	stdout_interface.setcur=vga_setcur;
+	stdout_interface.clear=vga_clear;
+	stdout_interface.fill_line=vga_fill_line;
+	stdout_interface.scroll=vga_scroll;
 }
 
 void disable_stdout() {
@@ -139,18 +137,16 @@ size_t buff_get_cur_y() {
 }
 
 void stdout_init_buffer() {
-	stdout_interface = (stdout){
-		.get_max_x=buff_get_max_x,
-		.get_max_y=buff_get_max_y,
-		.get_cur_x=buff_get_cur_x,
-		.get_cur_y=buff_get_cur_y,
-		.print_string=buff_print_string,
-		.putchar=buff_putchar,
-		.setcur=buff_setcur,
-		.clear=buff_clear,
-		.fill_line=buff_fill_line,
-		.scroll=buff_scroll,
-	};
+	stdout_interface.get_max_x=buff_get_max_x;
+	stdout_interface.get_max_y=buff_get_max_y;
+	stdout_interface.get_cur_x=buff_get_cur_x;
+	stdout_interface.get_cur_y=buff_get_cur_y;
+	stdout_interface.print_string=buff_print_string,
+	stdout_interface.putchar=buff_putchar;
+	stdout_interface.setcur=buff_setcur;
+	stdout_interface.clear=buff_clear;
+	stdout_interface.fill_line=buff_fill_line;
+	stdout_interface.scroll=buff_scroll;
 }
 
 
