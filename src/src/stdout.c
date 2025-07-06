@@ -1,6 +1,7 @@
 #include "../include/stdio.h"
 #include "../include/vga.h"
 #include "../include/stdbuff.h"
+#include "../include/string.h"
 
 #include <stdint.h>
 #include <stdbool.h>
