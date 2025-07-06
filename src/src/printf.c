@@ -124,7 +124,7 @@ int kprintf(const char *format, ...) {
 			format++;
 			switch (*format) {
 				case 's': {
-						const char *str=va_arg(args, const char);
+						const char *str=va_arg(args, const char*);
 						while (*str) {
 							kprintf_putc(*str);
 							str++;
