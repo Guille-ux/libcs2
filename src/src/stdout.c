@@ -107,6 +107,7 @@ void buff_clear(MultiColor color) {
 			buff_putchar(x, y, ' ', color);
 		}
 	}
+	buff_setcur(0, 0);
 }
 
 void buff_scroll() {

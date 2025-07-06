@@ -30,7 +30,7 @@ static void uint_to_hex_string(uintptr_t value, char *buffer) {
 	}
 
 	while (k > 0) {
-		buffer[i++]=tmp_buffer[k--];
+		buffer[i++]=tmp_buffer[--k];
 	}
 	buffer[i]='\0';
 }
@@ -59,7 +59,7 @@ static void int_to_dec_string(int value, char *buffer) {
 	if (negative) tmp_buffer[k++]='-';
 	
 	while (k > 0) {
-		buffer[i++]=tmp_buffer[k--];
+		buffer[i++]=tmp_buffer[--k];
 	}
 
 	buffer[i]='\0';

@@ -112,6 +112,7 @@ void vga_clear(MultiColor color) {
 			vga_putchar(x, y, chr, color);
 		}
 	}
+	vga_setcur(0, 0);
 }
 
 void vga_putchar(size_t x, size_t y, char c, MultiColor color) {
