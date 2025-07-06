@@ -25,6 +25,14 @@ void stdout_init_vga() {
 	stdout_interface.clear=vga_clear;
 	stdout_interface.fill_line=vga_fill_line;
 	stdout_interface.scroll=vga_scroll;
+	stdout_interface.default_color.as.text_mode=0x0F;
+}
+
+void kchcolor(MultiColor new_color) {
+	stdout_interface.default_color.as.text_mode=new_color.as.text_mode;
+	stdout_interface.default_color.as.graphic_mode.r=new_color.as.graphic_mode.r;
+	stdout_interface.default_color.as.graphic_mode.g=new_color.as.graphic_mode.g;
+	stdout_interface.default_color.as.graphic_mode.b=new_color.as.graphic_mode.b;
 }
 
 void disable_stdout() {

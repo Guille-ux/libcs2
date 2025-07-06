@@ -30,4 +30,6 @@ void disable_stdout();
 void enable_stdout();
 void kclear();
 
+void kchcolor(MultiColor new_color);
+
 #endif
