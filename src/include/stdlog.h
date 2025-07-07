@@ -15,8 +15,8 @@ typedef struct {
 	size_t max_len;
 	size_t len;
 	size_t max_log_len;
-	void *base[];
 	size_t (*get_max_log_len)(void);
+	void *base[];
 } stdlog_t;
 
 extern stdlog_t stdlog_interface;
