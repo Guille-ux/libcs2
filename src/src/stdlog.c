@@ -43,7 +43,7 @@ size_t klog_max_log_len() {
 	return stdlog_interface.max_log_len;
 }
 
-size_t klog_init(void *base, size_t max_len, size_t max_log_len) {
+size_t klog_init(void **base, size_t max_len, size_t max_log_len) {
 	stdlog_interface.base = base;
 	stdlog_interface.max_len = max_len;
 	stdlog_interface.max_log_len = max_log_len;
