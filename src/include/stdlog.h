@@ -11,12 +11,12 @@ typedef struct {
 	size_t (*get_max_len)(void);
 	void (*clean_logs)(void);
 	void (*append)(const char *str);
-	void (*init)(void base[], size_t max_len, size_t max_log_len);
+	void (*init)(void *base, size_t max_len, size_t max_log_len);
 	size_t max_len;
 	size_t len;
 	size_t max_log_len;
 	size_t (*get_max_log_len)(void);
-	void *base[];
+	void *base;
 } stdlog_t;
 
 extern stdlog_t stdlog_interface;
@@ -27,6 +27,6 @@ const char *klog_read(size_t index);
 size_t klog_len();
 size_t klog_max_len();
 size_t klog_max_log_len();
-void klog_init(void base[], size_t max_len, size_t max_log_len);
+void klog_init(void *base, size_t max_len, size_t max_log_len);
 
 #endif
