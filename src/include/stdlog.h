@@ -27,6 +27,6 @@ const char *klog_read(size_t index);
 size_t klog_len();
 size_t klog_max_len();
 size_t klog_max_log_len();
-void klog_init(void *base[], size_t max_len, size_t max_log_len);
+void klog_init(void *base, size_t max_len, size_t max_log_len);
 
 #endif
