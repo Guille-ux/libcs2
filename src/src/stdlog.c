@@ -12,7 +12,7 @@ void config_klog_interface() {
 	stdlog_interface.clean_logs = klog_clean;
 	stdlog_interface.append = klog;
 	stdlog_interface.init = klog_init;
-	stdlog_interface.get_max_log_len = klog_max_long_len;
+	stdlog_interface.get_max_log_len = klog_max_log_len;
 }
 
 void klog(const char *str) {
@@ -43,7 +43,7 @@ size_t klog_max_log_len() {
 	return stdlog_interface.max_log_len;
 }
 
-size_t klog_init(void *base[][], size_t max_len, size_t max_log_len) {
+size_t klog_init(void *base[], size_t max_len, size_t max_log_len) {
 	stdlog_interface.base = base;
 	stdlog_interface.max_len = max_len;
 	stdlog_interface.max_log_len = max_log_len;
