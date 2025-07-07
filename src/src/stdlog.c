@@ -17,6 +17,7 @@ void config_klog_interface() {
 
 void klog(const char *str) {
 	if (strlen(str) > stdlog_interface.max_log_len) return;
+	if (stdlog_interface.len > stdlog_interface.max_len) return;
 	strcpy((char*)stdlog_interface.base[stdlog_interface.len], str);
 	stdlog_interface.len++;
 }
