@@ -24,7 +24,7 @@ void klog(const char *str) {
 
 void klog_clean() {
 	stdlog_interface.len = 0;
-	memset(base[0], 32, stdlog_interface.max_log_len);
+	memset(stdlog_interface.base[0], 32, stdlog_interface.max_log_len);
 }
 
 const char *klog_read(size_t index) {
@@ -43,7 +43,7 @@ size_t klog_max_log_len() {
 	return stdlog_interface.max_log_len;
 }
 
-size_t klog_init(void *base[], size_t max_len, size_t max_log_len) {
+size_t klog_init(void *base[][], size_t max_len, size_t max_log_len) {
 	stdlog_interface.base = base;
 	stdlog_interface.max_len = max_len;
 	stdlog_interface.max_log_len = max_log_len;
