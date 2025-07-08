@@ -49,7 +49,7 @@ kb_t layout_en_US = {
     .num_map = _kbd_us_num_map,
 };
 
-
+kb_t *keyboard_layout;
 
 
 
