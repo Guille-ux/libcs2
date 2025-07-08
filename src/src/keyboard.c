@@ -69,9 +69,24 @@ bool alt=false;
 char kb_prefix;
 uint8_t scancode;
 
+void ps2_wait_for_write() {
+    while (inb(PS2_STATUS) & 0x02) {
+        io_wait();
+    }
+}
+
+uint8_t ps2_read_data() {
+    while (!(inb(PS2_STATUS) & 0x01)) { 
+        io_wait(); 
+    }
+    return inb(PS2_DATA);
+}
+
 void ps2_init() {
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_DISABLE_FIRST);
 	io_wait();
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_DISABLE_SECOND);
 	io_wait();
 
@@ -80,6 +95,7 @@ void ps2_init() {
 		inb(PS2_DATA);
 	}
 
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_READ_CONFIG_BYTE);
 	io_wait();
 	uint8_t config = inb(PS2_DATA);
@@ -96,12 +112,14 @@ void ps2_init() {
 	config &= ~0x40;
 
 	// writing config...
-	
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_WRITE_CONFIG_BYTE);
 	io_wait();
+	ps2_wait_for_write();
 	outb(PS2_DATA, config);
 	io_wait();
 
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_SELF_TEST);
 	io_wait();
 	if (inb(PS2_DATA) == PS2_TEST_PASSED) {
@@ -110,10 +128,12 @@ void ps2_init() {
 		kprintf("-> PS2 SELF TEST [FAILED]\n");
 	}
 
+	ps2_wait_for_write();
 	outb(PS2_STATUS, PS2_ENABLE_FIRST); io_wait();
 	if (mouse) outb(PS2_STATUS, PS2_ENABLE_SECOND); io_wait();
 
 	// reset keyboard
+	ps2_wait_for_write();
 	outb(PS2_DATA, PS2_RESET);
 
 	if (inb(PS2_DATA) == PS2_ACK) {
@@ -123,7 +143,9 @@ void ps2_init() {
 	}
 
 	// selecting scancode set
+	ps2_wait_for_write();
 	outb(PS2_DATA, PS2_SCANCODE_SET); io_wait();
+	ps2_wait_for_write();
 	outb(PS2_DATA, 0x02); io_wait();// selecting scancode set number 2
 
 	keyboard_interface.backspace = PS2_BACKSPACE;
