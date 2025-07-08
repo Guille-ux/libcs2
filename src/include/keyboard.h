@@ -36,11 +36,12 @@ extern bool win;
 extern bool ctrl;
 extern bool alt;
 
-
+#define PS2_BACKSPACE 0x66
 // para teclados INTEGRADOS, como comprenderas cuando el teclado es bluetooth o es USB, las cosas se complican un poco más
 typedef struct {
 	uint16_t data_port;
 	uint16_t status_port;
+	uint8_t backspace;
 	void (*handle)(void);
 } i_keyboard_t;
 

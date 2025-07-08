@@ -125,6 +125,7 @@ void ps2_init() {
 	outb(PS2_DATA, PS2_SCANCODE_SET); io_wait();
 	outb(PS2_DATA, 0x02); io_wait();// selecting scancode set number 2
 
+	keyboard_interface.backspace = PS2_BACKSPACE;
 	keyboard_interface.handle = ps2_handle;
 	keyboard_interface.data_port = PS2_DATA;
 	keyboard_interface.status_port = PS2_STATUS;
