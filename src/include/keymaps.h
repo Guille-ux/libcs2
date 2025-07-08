@@ -28,6 +28,6 @@ typedef struct {
 extern char kb_prefix;
 extern kb_t layout_en_US;
 extern kb_t *keyboard_layout;
-void set_kb_layout(unsigned char *kb_layout);
+void set_kb_layout(kb_t *kb_layout);
 
 #endif
