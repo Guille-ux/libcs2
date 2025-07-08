@@ -74,7 +74,7 @@ static void kprintf_putc(char c) {
 			size_t next_y = current_y + 1;
 
 			size_t max_y = stdout_interface.get_max_y();
-			if (next_y > max_y) {
+			if (next_y >= max_y) {
 				stdout_interface.scroll();
 				next_y = max_y - 1;
 			}
@@ -100,11 +100,11 @@ static void kprintf_putc(char c) {
 			stdout_interface.putchar(current_x, current_y, c, stdout_interface.default_color);
 			size_t next_x=current_x+1;
 			size_t next_y=current_y;
-			if (next_x > stdout_interface.get_max_x()) {
+			if (next_x >= stdout_interface.get_max_x()) {
 				next_x=0;
 				next_y++;
 				size_t max_y=stdout_interface.get_max_y();
-				if (next_y>max_y) {
+				if (next_y>=max_y) {
 					stdout_interface.scroll();
 					next_y=max_y-1;
 				}
