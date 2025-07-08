@@ -1,6 +1,7 @@
 #include "../include/keymaps.h"
 #include "../include/io.h"
 #include "../include/keyboard.h"
+#include "../include/printf.h"
 // atención, solo para teclados integrados
 
 
