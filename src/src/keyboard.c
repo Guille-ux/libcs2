@@ -179,14 +179,9 @@ void ps2_init() {
 	keyboard_interface.data_port = PS2_DATA;
 	keyboard_interface.status_port = PS2_STATUS;
 }
-/*#include "../include/keymaps.h"
-#include "../include/io.h"
-#include "../include/keyboard.h"
-#include "../include/printf.h"
-// atención, solo para teclados integrados
 
 
-
+/*
 const uint8_t _kbd_us_normal_map[256] = {
     0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 0, 0, // 0x00-0x0F
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 0, 0, 'a', 's', // 0x10-0x1F
@@ -333,7 +328,7 @@ void ps2_init() {
 	keyboard_interface.handle = ps2_handle;
 	keyboard_interface.data_port = PS2_DATA;
 	keyboard_interface.status_port = PS2_STATUS;
-}
+}*/
 
 void keyboard_handler() {
 	keyboard_interface.handle();
