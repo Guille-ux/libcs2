@@ -192,6 +192,8 @@ void set_kb_spec_1() {
     special_layout.lsuper=0xE047;
     special_layout.numlock=0x45;
     special_layout.scrolllock=0x46;
+    special_layout.lbshift=0xAA;
+    special_layout.rbshift=0xB6;
 }
 
 
@@ -361,11 +363,9 @@ void kb_common_handler() {
 	if (scancode==0xE0) {
 		kb_prefix = 0xE0;
 		keyboard_handler();
-        return;
 	} if (scancode==0xF0) {
 		kb_prefix = 0xF0;
 		keyboard_handler();
-        return;
 	}
 
 	if (kb_prefix==0xE0) {
@@ -380,7 +380,9 @@ void kb_common_handler() {
 	kb_prefix = 0;
 
     if (full_scancode==special_layout.lshift) {
-        shift_pressed = !is_break;
+        shift_pressed = true;
+    } else if (full_scancode==special_layout.lbshift || full_scancode == special_layout.rbshift) {
+        shift_pressed = false;
     } else if (full_scancode==special_layout.lsuper) {
         win = !is_break;
     } else if (full_scancode==special_layout.lalt) {
@@ -398,13 +400,13 @@ void kb_common_handler() {
     } else if (full_scancode==special_layout.rshift) {
 
     } else if (full_scancode==special_layout.rshift) {
-        shift_pressed = !is_break; 
+        shift_pressed = true; 
     } else if (full_scancode==special_layout.lctrl) {
         ctrl = !is_break; 
     } else if (full_scancode==special_layout.capslock) {
-        if (!is_break) caps_lock = !caps_lock;
+        caps_lock = !caps_lock;
     } else if (full_scancode==special_layout.numlock) {
-        if (!is_break) num_lock = !num_lock;
+        num_lock = !num_lock;
     }
 
 	if (!is_break) {

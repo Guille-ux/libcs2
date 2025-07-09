@@ -23,7 +23,7 @@ typedef struct {
 	uint8_t rshift;
 	uint16_t lctrl;
 	uint16_t lalt;
-	uint16_t lsuper;
+	uint8_t lsuper;
 	uint8_t capslock;
 	uint8_t numlock;
 	uint8_t scrolllock;
@@ -31,6 +31,8 @@ typedef struct {
 	uint8_t enter;
 	uint8_t tab;
 	uint8_t esc;
+	uint8_t lbshift;
+	uint8_t rbshift;
 } kb_spec;
 
 typedef struct {
