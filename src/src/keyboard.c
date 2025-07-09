@@ -70,14 +70,14 @@ char kb_prefix;
 uint8_t scancode;
 
 
-bool ps2_controller_exists() {
+/*bool ps2_controller_exists() {
     outb(PS2_STATUS, 0xAD); // Disable first port
     outb(PS2_STATUS, 0xA7); // Disable second port
     io_wait();
     
     uint8_t config = inb(PS2_STATUS);
     return !(config & 0x04); // Bit 2 = 0 means controller exists
-}
+}*/
 
 void ps2_flush() {
     while (inb(PS2_STATUS) & 0x01) {
@@ -125,10 +125,10 @@ void ps2_init() {
     set_kb_layout(&layout_en_US);
     
     // Verify PS/2 controller exists
-    if (!ps2_controller_exists()) {
+    /*if (!ps2_controller_exists()) {
         kprintf("PS2: No controller found\n");
         return;
-    }
+    }*/
 
     // Disable both devices
     ps2_send_cmd(PS2_DISABLE_FIRST);
