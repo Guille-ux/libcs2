@@ -35,6 +35,7 @@ extern bool num_lock;
 extern bool win;
 extern bool ctrl;
 extern bool alt;
+extern bool char_out;
 
 #define PS2_BACKSPACE 0x66
 // para teclados INTEGRADOS, como comprenderas cuando el teclado es bluetooth o es USB, las cosas se complican un poco más
@@ -49,7 +50,7 @@ extern i_keyboard_t keyboard_interface;
 void kb_common_handler();
 void keyboard_handler();
 
-void ps2_init();
+void ps2_init(uint8_t scan_set);
 
 void ps2_handle();
 

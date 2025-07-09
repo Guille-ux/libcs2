@@ -66,8 +66,9 @@ bool num_lock=false;
 bool win=false;
 bool ctrl=false;
 bool alt=false;
-char kb_prefix;
-uint8_t scancode;
+char kb_prefix=0;
+uint8_t scancode=0;
+bool char_out=false;
 
 
 /*bool ps2_controller_exists() {
@@ -120,7 +121,7 @@ bool ps2_expect_ack() {
     return inb(PS2_DATA) == PS2_ACK;
 }
 
-void ps2_init() {
+void ps2_init(uint8_t scan_set) {
     // Set default layout
     set_kb_layout(&layout_en_US);
     
@@ -151,7 +152,7 @@ void ps2_init() {
     if (!ps2_send_cmd(PS2_SELF_TEST)) return;
     if (!ps2_wait_for_read(1000)) return;
     uint8_t test_result = inb(PS2_DATA);
-    kprintf("PS2: Controller test %s\n", test_result == PS2_TEST_PASSED ? "passed" : "failed");
+    kprintf("PS2: Controller test %s \n", test_result == PS2_TEST_PASSED ? "passed" : "failed");
 
     // Enable first port
     ps2_send_cmd(PS2_ENABLE_FIRST);
@@ -165,12 +166,11 @@ void ps2_init() {
 
     if (!ps2_wait_for_read(1000)) return;
     uint8_t reset_result = inb(PS2_DATA);
-    kprintf("PS2: Reset %s\n", reset_result == 0xAA ? "successful" : "failed");
+    kprintf("PS2: Reset %s \n", reset_result == 0xAA ? "successful" : "failed");
 
-    // Set scancode set 2 (como solicitado)
     ps2_send_data(0xF0); // Set scancode command
     ps2_expect_ack();
-    ps2_send_data(0x02); // Scancode set 2
+    ps2_send_data(scan_set);
     ps2_expect_ack();
 
     // Setup interface
