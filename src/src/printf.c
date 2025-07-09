@@ -132,9 +132,8 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'c': {
-						char c=va_arg(args, char);
-						*format=c;
-						format--;
+						char *c=&va_arg(args, char);
+						kprintf_putc(*c);
 						break;
 					  }
 				case 'd': {

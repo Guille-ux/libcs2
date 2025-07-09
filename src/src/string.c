@@ -211,5 +211,5 @@ char *strchr(const char *str, int c) {
     if (c == '\0') {
         return (char *)str;
     }
-    return NULL
+    return NULL;
 }
