@@ -382,7 +382,7 @@ void kb_common_handler() {
 	}
 	// reiniciar prefijo
 	kb_prefix = 0;
-
+    char_out=false;
     if (full_scancode==special_layout.lshift) {
         shift_pressed = true;
     } else if (full_scancode==special_layout.lbshift || full_scancode == special_layout.rbshift) {
@@ -411,6 +411,8 @@ void kb_common_handler() {
         caps_lock = !caps_lock;
     } else if (full_scancode==special_layout.numlock) {
         num_lock = !num_lock;
+    } else {
+        char_out=true;
     }
 
 	if (!is_break) {
