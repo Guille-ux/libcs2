@@ -377,15 +377,34 @@ void kb_common_handler() {
 	// reiniciar prefijo
 	kb_prefix = 0;
 
-	switch (full_scancode) {
-		case special_layout.lshift: shift_pressed = !is_break; break;
-		case special_layout.rshift: shift_pressed = !is_break; break;
-		case special_layout.lctrl: ctrl = !is_break; break;
-		case special_layout.capslock: if (!is_break) caps_lock = !caps_lock; break;
-		case special_layout.numlock: if (!is_break) num_lock = !num_lock;
-		default: break;
-	}
+	if (full_scancode==special_layout.lshift) {
+        shift_pressed = !is_break;
+    } else if (full_scancode==special_layout.lsuper) {
+        win = !is_break;
+    } else if (full_scancode==special_layout.lalt) {
+        alt = !is_break;
+    } else if (full_scancode==special_layout.enter) {
 
+    } else if (full_scancode==special_layout.backspace) {
+
+    } else if (full_scancode==special_layout.esc) {
+
+    } else if (full_scancode==special_layout.tab) {
+
+    } else if (full_scancode==special_layout.scrolllock) {
+
+    } else if (full_scancode==special_layout.rshift) {
+
+    } else if (full_scancode==special_layout.rshift) {
+        shift_pressed = !is_break; 
+    } else if (full_scancode==special_layout.lctrl) {
+        ctrl = !is_break; 
+    } else if (full_scancode==special_layout.capslock) {
+        if (!is_break) caps_lock = !caps_lock;
+    } else if (full_scancode==special_layout.numlock) {
+        if (!is_break) num_lock = !num_lock;
+    }
+    
 	if (!is_break) {
         char_out=true;
 		final_character = '\0';
