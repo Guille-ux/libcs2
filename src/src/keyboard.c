@@ -360,10 +360,12 @@ void kb_common_handler() {
 
 	if (scancode==0xE0) {
 		kb_prefix = 0xE0;
-		return;
+		keyboard_handler();
+        return;
 	} if (scancode==0xF0) {
 		kb_prefix = 0xF0;
-		return;
+		keyboard_handler();
+        return;
 	}
 
 	if (kb_prefix==0xE0) {
@@ -377,7 +379,7 @@ void kb_common_handler() {
 	// reiniciar prefijo
 	kb_prefix = 0;
 
-	if (full_scancode==special_layout.lshift) {
+    if (full_scancode==special_layout.lshift) {
         shift_pressed = !is_break;
     } else if (full_scancode==special_layout.lsuper) {
         win = !is_break;
@@ -404,7 +406,7 @@ void kb_common_handler() {
     } else if (full_scancode==special_layout.numlock) {
         if (!is_break) num_lock = !num_lock;
     }
-    
+
 	if (!is_break) {
         char_out=true;
 		final_character = '\0';
@@ -414,11 +416,11 @@ void kb_common_handler() {
 			final_character = keyboard_layout->normal_map[scancode];
 		}
 
-		/*if (caps_lock && final_character >= 'a' && final_character <= 'z') { 
+		if (caps_lock && final_character >= 'a' && final_character <= 'z') { 
 			final_character -= 32; // convertir a mayuscula
 		} else if (caps_lock && final_character >= 'A' && final_character <= 'Z') {
 			final_character += 32;
-		}*/
+		}
 	}
 
 }
