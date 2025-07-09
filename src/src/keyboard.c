@@ -69,18 +69,6 @@ bool alt=false;
 char kb_prefix;
 uint8_t scancode;
 
-void ps2_wait_for_write() {
-    while (inb(PS2_STATUS) & 0x02) {
-        io_wait();
-    }
-}
-
-uint8_t ps2_read_data() {
-    while (!(inb(PS2_STATUS) & 0x01)) { 
-        io_wait(); 
-    }
-    return inb(PS2_DATA);
-}
 
 bool ps2_controller_exists() {
     outb(PS2_STATUS, 0xAD); // Disable first port
@@ -98,18 +86,18 @@ void ps2_flush() {
 }
 
 bool ps2_wait_for_write(uint32_t timeout) {
-    uint32_t start = get_ticks();
+    uint32_t start = 0;
     while (inb(PS2_STATUS) & 0x02) {
-        if (get_ticks() - start > timeout) return false;
+        if (++start > timeout) return false;
         io_wait();
     }
     return true;
 }
 
 bool ps2_wait_for_read(uint32_t timeout) {
-    uint32_t start = get_ticks();
+    uint32_t start = 0;
     while (!(inb(PS2_STATUS) & 0x01)) {
-        if (get_ticks() - start > timeout) return false;
+        if (++start > timeout) return false;
         io_wait();
     }
     return true;
