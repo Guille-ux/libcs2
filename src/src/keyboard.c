@@ -356,16 +356,20 @@ void ps2_handle() {
 	kb_common_handler();
 }
 void kb_common_handler() {
-    char_out=false;
+    char_out = !char_out;
 	uint16_t full_scancode = scancode;
 	bool is_break=false;
 
 	if (scancode==0xE0) {
 		kb_prefix = 0xE0;
+        char_out = true;
 		keyboard_handler();
+        return;
 	} if (scancode==0xF0) {
 		kb_prefix = 0xF0;
+        char_out = true;
 		keyboard_handler();
+        return;
 	}
 
 	if (kb_prefix==0xE0) {
@@ -410,10 +414,9 @@ void kb_common_handler() {
     }
 
 	if (!is_break) {
-        char_out=true;
 		final_character = '\0';
 		if (shift_pressed) {
-			final_character = keyboard_layout->shift_map[scancode];
+    		final_character = keyboard_layout->shift_map[scancode];
 		} else {
 			final_character = keyboard_layout->normal_map[scancode];
 		}
