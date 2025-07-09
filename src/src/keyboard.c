@@ -340,6 +340,7 @@ void ps2_handle() {
 	kb_common_handler();
 }
 void kb_common_handler() {
+    char_out=false;
 	uint16_t full_scancode = scancode;
 	bool is_break=false;
 
@@ -372,6 +373,7 @@ void kb_common_handler() {
 	}
 
 	if (!is_break) {
+        char_out=true;
 		final_character = '\0';
 		if (shift_pressed) {
 			final_character = keyboard_layout->shift_map[scancode];
@@ -379,11 +381,11 @@ void kb_common_handler() {
 			final_character = keyboard_layout->normal_map[scancode];
 		}
 
-		if (caps_lock && final_character >= 'a' && final_character <= 'z') { 
+		/*if (caps_lock && final_character >= 'a' && final_character <= 'z') { 
 			final_character -= 32; // convertir a mayuscula
 		} else if (caps_lock && final_character >= 'A' && final_character <= 'Z') {
 			final_character += 32;
-		}
+		}*/
 	}
 
 }
