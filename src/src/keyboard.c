@@ -51,7 +51,7 @@ kb_t layout_en_US = {
 
 kb_t *keyboard_layout;
 
-
+kb_spec special_layout;
 
 void set_kb_layout(kb_t *kb_layout) {
 	keyboard_layout = kb_layout;
@@ -121,10 +121,10 @@ bool ps2_expect_ack() {
     return inb(PS2_DATA) == PS2_ACK;
 }
 
+// function to set layout for scancode set 1 (me refiero a las teclas especiales de el struct kb_spec)
+
+
 void ps2_init(uint8_t scan_set) {
-    // Set default layout
-    set_kb_layout(&layout_en_US);
-    
     // Verify PS/2 controller exists
     /*if (!ps2_controller_exists()) {
         kprintf("PS2: No controller found\n");
@@ -174,10 +174,24 @@ void ps2_init(uint8_t scan_set) {
     ps2_expect_ack();
 
     // Setup interface
-    keyboard_interface.backspace = PS2_BACKSPACE;
 	keyboard_interface.handle = ps2_handle;
 	keyboard_interface.data_port = PS2_DATA;
 	keyboard_interface.status_port = PS2_STATUS;
+}
+
+void set_kb_spec_1() {
+    // rellenar, es necesario rellenar todo el struct
+    special_layout.lshift=0x2A;
+    special_layout.rshift=0x36;
+    special_layout.lctrl=0xE01D;
+    special_layout.lalt=0xE038;
+    special_layout.enter=0x1C;
+    special_layout.backspace=0x0E;
+    special_layout.esc=0x01;
+    special_layout.tab=0x0F;
+    special_layout.lsuper=0xE047;
+    special_layout.numlock=0x45;
+    special_layout.scrolllock=0x46;
 }
 
 
@@ -364,11 +378,11 @@ void kb_common_handler() {
 	kb_prefix = 0;
 
 	switch (full_scancode) {
-		case KC_LSHIFT: shift_pressed = !is_break; break;
-		case KC_RSHIFT: shift_pressed = !is_break; break;
-		case KC_LCTRL: ctrl = !is_break; break;
-		case KC_CAPSLOCK: if (!is_break) caps_lock = !caps_lock; break;
-		case KC_NUMLOCK: if (!is_break) num_lock = !num_lock;
+		case special_layout.lshift: shift_pressed = !is_break; break;
+		case special_layout.rshift: shift_pressed = !is_break; break;
+		case special_layout.lctrl: ctrl = !is_break; break;
+		case special_layout.capslock: if (!is_break) caps_lock = !caps_lock; break;
+		case special_layout.numlock: if (!is_break) num_lock = !num_lock;
 		default: break;
 	}
 

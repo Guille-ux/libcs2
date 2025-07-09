@@ -42,7 +42,6 @@ extern bool char_out;
 typedef struct {
 	uint16_t data_port;
 	uint16_t status_port;
-	uint8_t backspace;
 	void (*handle)(void);
 } i_keyboard_t;
 
