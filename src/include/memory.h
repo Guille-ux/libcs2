@@ -1,6 +1,9 @@
 #ifndef LIBCS_MEMORY
 #define LIBCS_MEMORY
 
+#include <stddef.h>
+#include <stdint.h>
+
 typedef void* (*malloc_t)(size_t size);
 typedef void* (*free_t)(void *ptr);
 
