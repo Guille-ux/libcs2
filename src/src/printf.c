@@ -149,29 +149,48 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'l': {
+						long num = va_arg(args, long);
+						char buffer[64];
+						ltoa(num, buffer, 10);
+						char *b = buffer;
+						while (*b) {
+							kprintf_putc(*b);
+							b++;
+						}
 						break;
 					  }
+				case 'lu': {
+						unsigned long n = va_arg(args, unsigned long);
+						char buffer[128];
+						char *b = buffer;
+						ultoa(n, buffer, 10);
+						while (*b) {
+							kprintf_putc(*b);
+							b++;
+						}
+						break;
+					   }
 				case 'x': {
-						size_t hex=va_arg(args, size_t);
-						char buffer[sizeof(size_t)*2+1];
-						uint_to_hex_string(hex, buffer);
-						char *buffptr=buffer;
-						while (*buffptr) {
-							kprintf_putc(*buffptr);
-							buffptr++;
+						unsigned long hex=va_arg(args, unsigned long);
+						char buffer[64];
+						ultoa(hex, buffer, 16);
+						char *b=buffer;
+						while (*b) {
+							kprintf_putc(*b);
+							b++;
 						}
 						break;
 					  }
 				case 'p': {
-						size_t pointer=va_arg(args, size_t);
-						char buffer[sizeof(size_t)*2+4];
-						uint_to_hex_string(pointer, &buffer[2]);
+						unsigned long pointer=va_arg(args, unsigned long);
+						char buffer[64]; 
+						ultoa(pointer, &buffer[2], 16);
 						buffer[0]='0';
 						buffer[1]='x';
-						char *buffptr=buffer;
-						while (*buffptr) {
-							kprintf_putc(*buffptr);
-							buffptr++;
+						char *b=buffer;
+						while (*b) {
+							kprintf_putc(*b);
+							b++;
 						}
 						break;
 					  }

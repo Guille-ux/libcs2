@@ -276,7 +276,7 @@ char *ltoa(long value, char *buffer, int base) {
 	reverse(buffer, i);
 	return buffer;
 }
-
+/*
 char *lltoa(long long value, char *buffer, int base) {
 	int i=0;
 	int nega=0;
@@ -306,6 +306,7 @@ char *lltoa(long long value, char *buffer, int base) {
 	reverse(buffer, i);
 	return buffer;
 }
+*/
 
 char *ultoa(unsigned long value, char *buffer, int base) {
 	int i=0;
@@ -326,7 +327,7 @@ char *ultoa(unsigned long value, char *buffer, int base) {
 	reverse(buffer, i);
 	return buffer;
 }
-
+/*
 char *ulltoa(unsigned long long value, char *buffer, int base) {
 	int i=0;
 	
@@ -346,4 +347,5 @@ char *ulltoa(unsigned long long value, char *buffer, int base) {
 	reverse(buffer, i);
 	return buffer;
 }
+*/
 
