@@ -149,24 +149,25 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'l': {
-						long num = va_arg(args, long);
-						char buffer[64];
-						ltoa(num, buffer, 10);
-						char *b = buffer;
-						while (*b) {
-							kprintf_putc(*b);
-							b++;
-						}
-						break;
-					  }
-				case 'lu': {
-						unsigned long n = va_arg(args, unsigned long);
-						char buffer[128];
-						char *b = buffer;
-						ultoa(n, buffer, 10);
-						while (*b) {
-							kprintf_putc(*b);
-							b++;
+						if (*(++format)!='u') {
+							long num = va_arg(args, long);
+							char buffer[64];
+							ltoa(num, buffer, 10);
+							char *b = buffer;
+							while (*b) {
+								kprintf_putc(*b);
+								b++;
+							}
+							format--;
+						} else {
+							unsigned long n = va_arg(args, unsigned long);
+							char buffer[128];
+							char *b = buffer;
+							ultoa(n, buffer, 10);
+							while (*b) {
+								kprintf_putc(*b);
+								b++;
+							}
 						}
 						break;
 					   }
