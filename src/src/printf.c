@@ -12,7 +12,7 @@
 
 // Auxiliary Functions
 
-static void uint_to_hex_string(uintptr_t value, char *buffer) {
+static void uint_to_hex_string(size_t value, char *buffer) {
 	const char hex_chars[]="0123456789ABCDEF";
 	int i=0;
 
@@ -21,7 +21,7 @@ static void uint_to_hex_string(uintptr_t value, char *buffer) {
 		buffer[1]='\0';
 		return;
 	}
-	char tmp_buffer[sizeof(uintptr_t)*2+1];
+	char tmp_buffer[sizeof(size_t)*2+1];
 	int k=0;
 
 	while (value > 0) {
@@ -148,9 +148,12 @@ int kprintf(const char *format, ...) {
 						}
 						break;
 					  }
+				case 'l': {
+						break;
+					  }
 				case 'x': {
-						uintptr_t hex=va_arg(args, uintptr_t);
-						char buffer[sizeof(uintptr_t)*2+1];
+						size_t hex=va_arg(args, size_t);
+						char buffer[sizeof(size_t)*2+1];
 						uint_to_hex_string(hex, buffer);
 						char *buffptr=buffer;
 						while (*buffptr) {
@@ -160,8 +163,8 @@ int kprintf(const char *format, ...) {
 						break;
 					  }
 				case 'p': {
-						uintptr_t pointer=va_arg(args, uintptr_t);
-						char buffer[sizeof(uintptr_t)*2+4];
+						size_t pointer=va_arg(args, size_t);
+						char buffer[sizeof(size_t)*2+4];
 						uint_to_hex_string(pointer, &buffer[2]);
 						buffer[0]='0';
 						buffer[1]='x';
