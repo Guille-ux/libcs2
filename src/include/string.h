@@ -20,6 +20,7 @@ char *strncpy(char *dest, const char *src, size_t n);
 char *strncat(char *dest, const char *src, size_t n);
 char *strtok(char *str, const char *delim);
 char *strchr(const char *str, int c);
+char *strrchr(const char *str, int c);
 size_t strspn(const char *s1, const char *s2);
 size_t strcspn(const char *s1, const char *s2);
 long atol(const char *str);

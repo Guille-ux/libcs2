@@ -229,6 +229,17 @@ char *strchr(const char *str, int c) {
     return NULL;
 }
 
+char *strrchr(const char *str, int c) {
+	int i = strlen(str);
+	while (i >= 0) {
+		if (str[i]==c) {
+			return &str[i];
+		}
+		i--;
+	}
+	return NULL;
+}
+
 long atol(const char *str) {
 	long res=0;
 	char sign=1;
